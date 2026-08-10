@@ -9,47 +9,6 @@ function EventData() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleExport = async () => {
-  try {
-    const response = await fetch(
-      `${SERVER_URL}/api/scoreboard`
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch event data.');
-    }
-
-    const data = await response.json();
-
-    const backup = {
-      eventName: data.eventName || 'HIM MEELAD FEST',
-      eventTitle: data.eventTitle || 'നൂറെ റസൂൽ',
-      teams: data.teams || [],
-      exportedAt: new Date().toISOString(),
-    };
-
-    const blob = new Blob(
-      [JSON.stringify(backup, null, 2)],
-      { type: 'application/json' }
-    );
-
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'him-meelad-fest-backup.json';
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Export failed:', error);
-    setMessage(`❌ ${error.message}`);
-  }
-};
-
   const handleImport = async () => {
     if (!file) {
       setMessage('Please select a JSON file.');
@@ -61,12 +20,19 @@ function EventData() {
 
     try {
       const text = await file.text();
-      const data = JSON.parse(text);
 
-      if (!Array.isArray(data.teams)) {
-        throw new Error('Invalid backup: teams data not found.');
+      const jsonData = JSON.parse(text);
+
+      // Same logic as the original working import
+      const teams = jsonData.teams || [];
+
+      if (!Array.isArray(teams) || teams.length === 0) {
+        throw new Error(
+          'No teams found in the JSON file.'
+        );
       }
 
+      // Send imported data to backend
       const response = await fetch(
         `${SERVER_URL}/api/scoreboard`,
         {
@@ -75,21 +41,46 @@ function EventData() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            eventName: data.eventName || 'HIM MEELAD FEST',
-            eventTitle: data.eventTitle || 'നൂറെ റസൂൽ',
-            teams: data.teams,
+            eventName:
+              jsonData.eventName ||
+              'HIM MEELAD FEST',
+
+            eventTitle:
+              jsonData.eventTitle ||
+              'നൂറെ റസൂൽ',
+
+            teams: teams,
           }),
         }
       );
 
       if (!response.ok) {
-        throw new Error('Server update failed.');
+        throw new Error(
+          'Server update failed.'
+        );
       }
 
-      setMessage('✅ Event data imported successfully!');
+      const result = await response.json();
+
+      console.log(
+        'Imported scoreboard:',
+        result
+      );
+
+      setMessage(
+        `✅ ${teams.length} teams imported successfully!`
+      );
+
     } catch (error) {
-      console.error('Import failed:', error);
-      setMessage(`❌ ${error.message}`);
+      console.error(
+        'Import failed:',
+        error
+      );
+
+      setMessage(
+        `❌ ${error.message}`
+      );
+
     } finally {
       setLoading(false);
     }
@@ -101,13 +92,19 @@ function EventData() {
       <header className="event-data-header">
 
         <div>
-          <p>ADMIN CONTROL PANEL</p>
 
-          <h1>📁 Event Data</h1>
+          <p>
+            ADMIN CONTROL PANEL
+          </p>
+
+          <h1>
+            📁 Event Data
+          </h1>
 
           <span>
             HIM MEELAD FEST · നൂറെ റസൂൽ
           </span>
+
         </div>
 
       </header>
@@ -120,19 +117,26 @@ function EventData() {
             📁
           </div>
 
-          <h2>Import Event Data</h2>
+          <h2>
+            Import Event Data
+          </h2>
 
           <p>
-            Import a previously saved JSON backup
-            and restore the event scoreboard.
+            Select your JSON backup file
+            to restore the event data.
           </p>
 
           <input
             type="file"
             accept=".json,application/json"
             onChange={(e) => {
-              setFile(e.target.files[0]);
+
+              const selectedFile =
+                e.target.files[0];
+
+              setFile(selectedFile);
               setMessage('');
+
             }}
           />
 
@@ -143,19 +147,15 @@ function EventData() {
           )}
 
           <button
-          className='export-button'
-          onClick={handleExport}
-
-          ></button>
-
-          <button
             className="import-button"
             onClick={handleImport}
             disabled={loading}
           >
+
             {loading
               ? 'Importing...'
               : '📥 Import Data'}
+
           </button>
 
           {message && (
