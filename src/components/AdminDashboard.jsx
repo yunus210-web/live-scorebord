@@ -1,11 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Admin.css';
 
 const SERVER_URL =
   'https://live-scorebord-production.up.railway.app';
 
-function AdminDashboard() {
-  const [connected, setConnected] = useState(true);
+  
+  function AdminDashboard() {
+  const [connected, setConnected] = useState(false);
+  const [teams, setTeams] = useState([]);
+  
+  useEffect(() => {
+  const loadScoreboard = async () => {
+    try {
+      const response = await fetch(
+        `${SERVER_URL}/api/scoreboard`
+      );
+
+      const data = await response.json();
+
+      setTeams(data.teams || []);
+      setConnected(true);
+    } catch (error) {
+      console.error('Failed to load scoreboard:', error);
+      setConnected(false);
+    }
+  };
+
+  loadScoreboard();
+}, []);
+
 
   const handleLogout = () => {
     window.location.href = '/admin';
