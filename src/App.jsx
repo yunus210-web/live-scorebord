@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import Display from './Display';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
+import ScoreManagement from './components/ScoreManagent';
 import './App.css';
 
 const SERVER_URL = 'https://live-scorebord-production.up.railway.app';
@@ -352,9 +353,15 @@ function AppRouter() {
     );
   }
 
+   if(path === '/admin/scores') {
+    return <ScoreManagement />;
+  }
+
   if(path === '/admin/dashboard'){
     return <AdminDashboard/>;
   }
+
+ 
 
   return <App />;
 }

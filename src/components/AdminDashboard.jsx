@@ -105,6 +105,11 @@ const SERVER_URL =
             </p>
 
             <button className="panel-button">
+              onClick={() => {
+                window.location.href = '/admin/scores';
+              }}
+
+              
               Manage Scores
             </button>
           </div>
