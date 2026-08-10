@@ -330,3 +330,44 @@ footer span:first-child {
     font-size: 28px;
   }
 }
+/* ================================
+   ADMIN ACTION CARDS
+================================ */
+
+.admin-dashboard section {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+/* Individual cards */
+.admin-dashboard section > div {
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.admin-dashboard section > div:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.10);
+}
+
+/* Card headings */
+.admin-dashboard section h2 {
+  margin-bottom: 8px;
+  font-size: 22px;
+}
+
+/* Card buttons */
+.admin-dashboard section button {
+  margin-top: 12px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .admin-dashboard section {
+    grid-template-columns: 1fr;
+  }
+}
