@@ -167,7 +167,12 @@ const SERVER_URL =
               Import event data from a JSON backup.
             </p>
 
-            <button className="panel-button">
+            <button className="panel-button"
+            onClick={() => {
+              window.location.href = '/admin/event-data';
+            }}
+
+            >
               Import Data
             </button>
           </div>

@@ -1,0 +1,86 @@
+.event-data {
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.event-data-header {
+  padding: 30px;
+  border-radius: 24px;
+  margin-bottom: 25px;
+}
+
+.event-data-header p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.event-data-header h1 {
+  margin: 0;
+  font-size: 36px;
+}
+
+.event-data-header span {
+  display: block;
+  margin-top: 8px;
+}
+
+.event-data-content {
+  max-width: 800px;
+  margin: auto;
+}
+
+.event-data-card {
+  padding: 40px;
+  border-radius: 24px;
+  text-align: center;
+}
+
+.event-data-icon {
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+.event-data-card h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.event-data-card p {
+  margin-bottom: 25px;
+}
+
+.event-data-card input {
+  display: block;
+  width: 100%;
+  margin: 25px 0;
+  padding: 15px;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.selected-file {
+  font-weight: 600;
+}
+
+.import-button {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.import-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.import-message {
+  margin-top: 25px;
+  padding: 15px;
+  border-radius: 12px;
+  font-weight: 600;
+}
