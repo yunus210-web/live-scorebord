@@ -4,6 +4,7 @@ import Display from './Display';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import ScoreManagement from './components/ScoreManagent';
+import TeamsManagement from './components/TeamsManagement';
 import './App.css';
 
 const SERVER_URL = 'https://live-scorebord-production.up.railway.app';
@@ -355,6 +356,10 @@ function AppRouter() {
 
    if(path === '/admin/scores') {
     return <ScoreManagement />;
+  }
+
+  if(path === '/admin/teams') {
+    return <TeamsManagement />
   }
 
   if(path === '/admin/dashboard'){

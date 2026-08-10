@@ -146,7 +146,12 @@ const SERVER_URL =
               View and manage participating teams.
             </p>
 
-            <button className="panel-button">
+            <button className="panel-button"
+            onClick={() => {
+              window.location.href = '/admin/teams';
+            }}
+
+            >
               Manage Teams
             </button>
           </div>
