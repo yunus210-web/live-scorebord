@@ -1,0 +1,407 @@
+/* ================================
+   TV LIVE SCOREBOARD
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #050814;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.tv-display {
+  min-height: 100vh;
+  width: 100%;
+  padding: 30px 45px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at top center, #182a55 0%, #080d1d 42%, #03050c 100%);
+  overflow-x: hidden;
+}
+
+/* ================================
+   HEADER
+================================ */
+
+.tv-header {
+  text-align: center;
+  padding: 10px 20px 25px;
+}
+
+.sabha {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #c9d8ff;
+  text-transform: uppercase;
+}
+
+.madrassa {
+  margin-top: 7px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #8fa6d9;
+}
+
+.tv-header h1 {
+  margin: 12px 0 4px;
+  font-size: clamp(38px, 5vw, 72px);
+  font-weight: 900;
+  letter-spacing: 5px;
+  background: linear-gradient(
+    90deg,
+    #ffffff,
+    #63d9ff,
+    #ffffff
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 25px rgba(55, 200, 255, 0.25);
+}
+
+.tv-header h2 {
+  margin: 5px 0 14px;
+  font-size: clamp(25px, 3vw, 45px);
+  font-weight: 700;
+  color: #ffd76a;
+  text-shadow: 0 0 18px rgba(255, 205, 70, 0.35);
+}
+
+.live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  background: rgba(255, 40, 70, 0.12);
+  border: 1px solid rgba(255, 70, 90, 0.4);
+  color: #ff5c72;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.live-status > span {
+  animation: liveBlink 1s infinite;
+}
+
+.live-status small {
+  color: #aab8d6;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ================================
+   SCOREBOARD
+================================ */
+
+.tv-scoreboard {
+  width: min(1150px, 100%);
+  margin: 0 auto;
+}
+
+.tv-board-title {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 13px;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    rgba(20, 80, 150, 0.2),
+    rgba(45, 160, 220, 0.25),
+    rgba(20, 80, 150, 0.2)
+  );
+  border: 1px solid rgba(90, 190, 255, 0.25);
+  color: #dff7ff;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+/* ================================
+   TEAM CARD
+================================ */
+
+.tv-team {
+  position: relative;
+  display: grid;
+  grid-template-columns: 90px 1fr 180px;
+  align-items: center;
+  gap: 20px;
+
+  min-height: 105px;
+  margin-bottom: 13px;
+  padding: 15px 25px;
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0.09),
+      rgba(255, 255, 255, 0.035)
+    );
+
+  border: 1px solid rgba(150, 180, 230, 0.16);
+
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  transition:
+    transform 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.tv-team:hover {
+  transform: scale(1.015);
+  border-color: rgba(80, 210, 255, 0.5);
+}
+
+/* ================================
+   FIRST PLACE
+================================ */
+
+.tv-team.first-place {
+  min-height: 125px;
+
+  background:
+    linear-gradient(
+      110deg,
+      rgba(255, 193, 7, 0.16),
+      rgba(255, 255, 255, 0.05)
+    );
+
+  border: 1px solid rgba(255, 210, 70, 0.5);
+
+  box-shadow:
+    0 0 35px rgba(255, 193, 7, 0.12),
+    inset 0 1px 0 rgba(255, 230, 130, 0.15);
+}
+
+/* ================================
+   RANK
+================================ */
+
+.tv-rank {
+  text-align: center;
+  font-size: 35px;
+  font-weight: 900;
+  color: #aab9d8;
+}
+
+.first-place .tv-rank {
+  font-size: 48px;
+}
+
+/* ================================
+   TEAM NAME
+================================ */
+
+.tv-team-name h3 {
+  margin: 0;
+
+  font-size: clamp(24px, 2.5vw, 38px);
+  font-weight: 800;
+
+  color: #ffffff;
+}
+
+.first-place .tv-team-name h3 {
+  color: #ffe28a;
+}
+
+.tv-team-name span {
+  display: inline-block;
+  margin-top: 5px;
+
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+
+  color: #7fa0d5;
+  text-transform: uppercase;
+}
+
+/* ================================
+   POINTS
+================================ */
+
+.tv-points {
+  text-align: right;
+
+  font-size: clamp(45px, 5vw, 70px);
+  line-height: 1;
+
+  font-weight: 900;
+
+  color: #5ee7ff;
+
+  text-shadow:
+    0 0 18px rgba(50, 220, 255, 0.35);
+}
+
+.first-place .tv-points {
+  color: #ffd75c;
+
+  text-shadow:
+    0 0 25px rgba(255, 205, 60, 0.4);
+}
+
+/* ================================
+   LOADING
+================================ */
+
+.tv-loading {
+  text-align: center;
+  padding: 100px 20px;
+
+  font-size: 25px;
+  font-weight: 700;
+
+  color: #8fa6d9;
+
+  animation: pulse 1.5s infinite;
+}
+
+/* ================================
+   FOOTER
+================================ */
+
+.tv-footer {
+  width: min(1150px, 100%);
+  margin: 25px auto 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 20px;
+
+  border-top: 1px solid rgba(130, 160, 210, 0.15);
+
+  color: #7185ad;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.tv-footer span:last-child {
+  color: #62df9a;
+}
+
+/* ================================
+   ANIMATIONS
+================================ */
+
+@keyframes liveBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 700px) {
+  .tv-display {
+    padding: 20px 12px;
+  }
+
+  .sabha {
+    font-size: 13px;
+    letter-spacing: 1.5px;
+  }
+
+  .madrassa {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .tv-header h1 {
+    letter-spacing: 2px;
+  }
+
+  .tv-board-title {
+    font-size: 15px;
+  }
+
+  .tv-team {
+    grid-template-columns: 55px 1fr 90px;
+    gap: 10px;
+    min-height: 85px;
+    padding: 12px;
+  }
+
+  .tv-team.first-place {
+    min-height: 100px;
+  }
+
+  .tv-rank {
+    font-size: 25px;
+  }
+
+  .first-place .tv-rank {
+    font-size: 34px;
+  }
+
+  .tv-team-name h3 {
+    font-size: 19px;
+  }
+
+  .tv-team-name span {
+    font-size: 9px;
+  }
+
+  .tv-points {
+    font-size: 38px;
+  }
+
+  .tv-footer {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+/* ================================
+   LARGE TV
+================================ */
+
+@media (min-width: 1600px) {
+  .tv-display {
+    padding: 45px 80px;
+  }
+
+  .tv-team {
+    min-height: 125px;
+  }
+
+  .tv-team.first-place {
+    min-height: 145px;
+  }
+}

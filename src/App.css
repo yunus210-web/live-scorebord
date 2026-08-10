@@ -1,0 +1,235 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #050505;
+}
+
+.scoreboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #050505, #151515);
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  padding: 35px 20px 25px;
+  border-bottom: 2px solid #333;
+}
+
+.event-title {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: 4px;
+}
+
+.event-subtitle {
+  margin-top: 8px;
+  font-size: 20px;
+  letter-spacing: 6px;
+  opacity: 0.7;
+}
+
+.board {
+  width: 90%;
+  max-width: 1200px;
+  margin: 35px auto;
+  flex: 1;
+}
+
+.board-title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.board-title span {
+  margin: 0 20px;
+}
+
+.table-header,
+.team-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 180px;
+  align-items: center;
+}
+
+.table-header {
+  padding: 18px 25px;
+  background: #252525;
+  color: #aaa;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.team-row {
+  margin-top: 10px;
+  padding: 24px 25px;
+  background: #1b1b1b;
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+
+.team-row:hover {
+  transform: scale(1.01);
+}
+
+.rank {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.team-name {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.points {
+  font-size: 34px;
+  font-weight: 800;
+  text-align: right;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 40px;
+  background: #111;
+  color: #aaa;
+  font-size: 15px;
+}
+
+footer span:first-child {
+  color: #ff3333;
+  font-weight: bold;
+}
+
+@media (max-width: 700px) {
+  .event-title {
+    font-size: 28px;
+  }
+
+  .table-header,
+  .team-row {
+    grid-template-columns: 70px 1fr 100px;
+  }
+
+  .team-name {
+    font-size: 18px;
+  }
+
+  .points {
+    font-size: 24px;
+  }
+}
+.import-box {
+  margin-bottom: 35px;
+  padding: 25px;
+  text-align: center;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.import-box h2 {
+  margin-bottom: 8px;
+}
+
+.import-box p {
+  opacity: 0.65;
+  margin-bottom: 18px;
+}
+
+.upload-button {
+  display: inline-block;
+  padding: 12px 25px;
+  border-radius: 30px;
+  background: white;
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.upload-button input {
+  display: none;
+}
+
+.import-success {
+  margin-top: 15px;
+  color: #5cff9d;
+  font-weight: bold;
+}
+
+.error {
+  margin-top: 15px;
+  color: #ff5c72 !important;
+}
+
+.rank {
+  width: 60px;
+  font-size: 22px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.empty-state div {
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+.empty-state h3 {
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  opacity: 0.6;
+}
+.team-info {
+  flex: 1;
+}
+
+.score-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.score-controls button {
+  border: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.score-controls button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.score-controls button:nth-child(2),
+.score-controls button:nth-child(3) {
+  background: #1677ff;
+}
+
+.points {
+  min-width: 80px;
+  text-align: right;
+}
