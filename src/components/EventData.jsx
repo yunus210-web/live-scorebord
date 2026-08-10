@@ -9,6 +9,47 @@ function EventData() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleExport = async () => {
+  try {
+    const response = await fetch(
+      `${SERVER_URL}/api/scoreboard`
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch event data.');
+    }
+
+    const data = await response.json();
+
+    const backup = {
+      eventName: data.eventName || 'HIM MEELAD FEST',
+      eventTitle: data.eventTitle || 'നൂറെ റസൂൽ',
+      teams: data.teams || [],
+      exportedAt: new Date().toISOString(),
+    };
+
+    const blob = new Blob(
+      [JSON.stringify(backup, null, 2)],
+      { type: 'application/json' }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'him-meelad-fest-backup.json';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Export failed:', error);
+    setMessage(`❌ ${error.message}`);
+  }
+};
+
   const handleImport = async () => {
     if (!file) {
       setMessage('Please select a JSON file.');
@@ -100,6 +141,12 @@ function EventData() {
               📄 {file.name}
             </p>
           )}
+
+          <button
+          className='export-button'
+          onClick={handleExport}
+
+          ></button>
 
           <button
             className="import-button"
