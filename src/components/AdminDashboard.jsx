@@ -104,11 +104,11 @@ const SERVER_URL =
               Update team points and manage live scores.
             </p>
 
-            <button className="panel-button">
+            <button className="panel-button"
               onClick={() => {
                 window.location.href = '/admin/scores';
               }}
-
+             >
               
               Manage Scores
             </button>
