@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import Display from './Display';
 import './App.css';
 
-const SERVER_URL = 'https://him-meelad-fest-26-production.up.railway.app';
+const SERVER_URL = 'https://live-scorebord-production.up.railway.app';
 
 function App() {
   const [data, setData] = useState(null);
