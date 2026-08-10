@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import Display from './Display';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 import './App.css';
 
 const SERVER_URL = 'https://live-scorebord-production.up.railway.app';
@@ -333,9 +335,25 @@ function App() {
   );
 }
 
-function AppRouter(){
-  if(window.location.pathname === '/display'){
+function AppRouter() {
+  const path = window.location.pathname;
+
+  if (path === '/display') {
     return <Display />;
+  }
+
+  if (path === '/admin') {
+    return (
+      <AdminLogin
+        onLogin={() => {
+          window.location.href = '/admin/dashboard';
+        }}
+      />
+    );
+  }
+
+  if(path === '/admin/dashboard'){
+    return <AdminDashboard/>;
   }
 
   return <App />;

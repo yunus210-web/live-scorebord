@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import './Display.css';
 
-const SERVER_URL = 'https://him-meelad-fest-26-production.up.railway.app';
+const SERVER_URL = 'https://live-scorebord-production.up.railway.app';
 
 function Display() {
   const [teams, setTeams] = useState([]);
