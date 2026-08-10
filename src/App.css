@@ -478,3 +478,532 @@ body {
     font-size: 19px;
   }
 }
+
+/* =========================================================
+   MAIN LIVE SCOREBOARD
+========================================================= */
+
+.app {
+  min-height: 100vh;
+  padding: 35px 20px 60px;
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(0, 110, 255, 0.28),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 10% 50%,
+      rgba(0, 200, 255, 0.08),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #030814 0%,
+      #071a35 50%,
+      #02050d 100%
+    );
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+  width: min(100%, 1050px);
+  margin: 0 auto 35px;
+  text-align: center;
+}
+
+.hero .subtitle {
+  margin: 0 0 8px;
+  color: #b9d7ff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.hero h1 {
+  margin: 0;
+
+  font-size: clamp(38px, 6vw, 70px);
+  font-weight: 900;
+  letter-spacing: 3px;
+
+  background: linear-gradient(
+    90deg,
+    #ffffff,
+    #5ee7ff,
+    #ffffff
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 0 0 30px rgba(50, 200, 255, 0.25);
+}
+
+.hero .event-title {
+  margin: 10px 0 16px;
+
+  color: #ffd76a;
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 800;
+
+  text-shadow: 0 0 18px rgba(255, 210, 80, 0.25);
+}
+
+.hero > span {
+  display: inline-block;
+
+  padding: 9px 20px;
+
+  border-radius: 999px;
+
+  color: #e8faff;
+  background: rgba(80, 190, 255, 0.12);
+
+  border: 1px solid rgba(80, 210, 255, 0.3);
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+
+/* =========================================================
+   MAIN SCOREBOARD
+========================================================= */
+
+.scoreboard {
+  width: min(100%, 1000px);
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   IMPORT BOX
+========================================================= */
+
+.import-box {
+  padding: 24px 28px;
+  margin-bottom: 30px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.09),
+      rgba(255, 255, 255, 0.035)
+    );
+
+  border: 1px solid rgba(120, 190, 255, 0.18);
+
+  box-shadow:
+    0 15px 45px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.import-box h2 {
+  margin: 0 0 8px;
+
+  color: #ffffff;
+  font-size: 22px;
+}
+
+.import-box p {
+  margin: 5px 0 14px;
+
+  color: #9fb9d8;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   JSON UPLOAD BUTTON
+========================================================= */
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  overflow: hidden;
+
+  padding: 11px 18px;
+
+  border-radius: 12px;
+
+  color: #03101c;
+  background: #5ee7ff;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 22px rgba(50, 210, 255, 0.18);
+
+  transition: 0.2s ease;
+}
+
+.upload-button:hover {
+  transform: translateY(-2px);
+  background: #83edff;
+
+  box-shadow:
+    0 12px 28px rgba(50, 210, 255, 0.28);
+}
+
+.upload-button input {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  opacity: 0;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   IMPORT STATUS
+========================================================= */
+
+.import-success {
+  display: inline-block;
+
+  margin-left: 12px;
+
+  padding: 8px 13px;
+
+  border-radius: 999px;
+
+  color: #61ffa0;
+  background: rgba(92, 255, 157, 0.08);
+
+  border: 1px solid rgba(92, 255, 157, 0.18);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.error {
+  color: #ff7182 !important;
+}
+
+
+/* =========================================================
+   LIVE SCORE HEADER
+========================================================= */
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+  padding: 0 5px;
+}
+
+.section-title h2 {
+  margin: 0;
+
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.live {
+  color: #ff6175;
+
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+
+  animation: livePulse 1.4s infinite;
+}
+
+
+/* =========================================================
+   TEAM CARD
+========================================================= */
+
+.team-card {
+  display: grid;
+
+  grid-template-columns: 75px 1fr auto;
+
+  align-items: center;
+
+  gap: 20px;
+
+  min-height: 115px;
+
+  margin-bottom: 14px;
+
+  padding: 20px 25px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0.09),
+      rgba(255, 255, 255, 0.035)
+    );
+
+  border: 1px solid rgba(150, 190, 240, 0.16);
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(80, 210, 255, 0.4);
+}
+
+
+/* =========================================================
+   RANK
+========================================================= */
+
+.rank {
+  text-align: center;
+
+  color: #b5c8e8;
+
+  font-size: 30px;
+  font-weight: 900;
+}
+
+
+/* =========================================================
+   TEAM INFO
+========================================================= */
+
+.team-info h3 {
+  margin: 0 0 5px;
+
+  color: #ffffff;
+
+  font-size: clamp(21px, 3vw, 30px);
+  font-weight: 800;
+}
+
+.team-info > p {
+  margin: 0 0 12px;
+
+  color: #7f9dc8;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   SCORE BUTTONS
+========================================================= */
+
+.score-controls {
+  display: flex;
+  gap: 7px;
+}
+
+.score-controls button {
+  min-width: 52px;
+
+  padding: 7px 10px;
+
+  border-radius: 9px;
+
+  color: #ffffff;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.score-controls button:hover {
+  background: rgba(80, 210, 255, 0.2);
+
+  border-color: rgba(80, 210, 255, 0.35);
+}
+
+
+/* =========================================================
+   POINTS
+========================================================= */
+
+.points {
+  min-width: 110px;
+
+  text-align: right;
+
+  color: #5ee7ff;
+
+  font-size: clamp(40px, 5vw, 60px);
+
+  font-weight: 900;
+
+  line-height: 1;
+
+  text-shadow:
+    0 0 20px rgba(50, 220, 255, 0.3);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-state {
+  padding: 70px 20px;
+
+  text-align: center;
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.045);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.empty-state > div {
+  margin-bottom: 12px;
+
+  font-size: 45px;
+}
+
+.empty-state h3 {
+  margin-bottom: 8px;
+
+  color: #ffffff;
+  font-size: 22px;
+}
+
+.empty-state p {
+  color: #8fa6c8;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .app {
+    padding: 25px 12px 40px;
+  }
+
+  .hero {
+    margin-bottom: 25px;
+  }
+
+  .hero .subtitle {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+    letter-spacing: 1px;
+  }
+
+  .hero .event-title {
+    font-size: 22px;
+  }
+
+  .import-box {
+    padding: 20px;
+  }
+
+  .import-success {
+    display: block;
+    width: fit-content;
+    margin: 12px 0 0;
+  }
+
+  .team-card {
+    grid-template-columns: 45px 1fr auto;
+
+    gap: 10px;
+
+    min-height: 100px;
+
+    padding: 15px 12px;
+  }
+
+  .rank {
+    font-size: 23px;
+  }
+
+  .team-info h3 {
+    font-size: 19px;
+  }
+
+  .team-info > p {
+    font-size: 9px;
+  }
+
+  .score-controls {
+    gap: 4px;
+  }
+
+  .score-controls button {
+    min-width: 42px;
+    padding: 6px 7px;
+    font-size: 10px;
+  }
+
+  .points {
+    min-width: 55px;
+    font-size: 34px;
+  }
+}
