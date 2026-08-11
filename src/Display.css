@@ -654,46 +654,44 @@ body {
   }
 }
 /* =========================================
-   🎉 SCORE CELEBRATION
+   🎉 LIVE SCORE CELEBRATION
+   Confetti + Floating Points + Sparkles
 ========================================= */
 
 .celebration-container {
   position: fixed;
   inset: 0;
-
   width: 100%;
   height: 100%;
 
   pointer-events: none;
-
   overflow: hidden;
 
   z-index: 9999;
 }
 
-/* CONFETTI */
+
+/* =========================================
+   🎉 CONFETTI
+========================================= */
 
 .confetti {
   position: absolute;
 
-  top: -25px;
+  top: -30px;
 
-  width: 10px;
+  width: 9px;
   height: 18px;
 
   border-radius: 2px;
 
   background: #ffd54f;
 
-  animation-name: confettiFall;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
+  animation:
+    confettiFall 1.2s linear forwards;
 
-  box-shadow:
-    0 0 8px rgba(255, 220, 80, 0.7);
+  opacity: 0;
 }
-
-/* Different confetti shapes/colors */
 
 .confetti:nth-child(3n) {
   background: #4dd0ff;
@@ -712,14 +710,12 @@ body {
 }
 
 @keyframes confettiFall {
+
   0% {
     transform:
       translateY(-30px)
       rotate(0deg);
-    opacity: 1;
-  }
 
-  50% {
     opacity: 1;
   }
 
@@ -727,38 +723,132 @@ body {
     transform:
       translateY(105vh)
       rotate(720deg);
+
     opacity: 0;
   }
 }
 
 
 /* =========================================
-   ✨ SCORE FLASH
+   ✨ SPARKLE EFFECT
 ========================================= */
 
-.tv-team.score-changed {
-  position: relative;
+.celebration-container::before,
+.celebration-container::after {
+  content: "✦  ✨  ✦  ✨  ✦";
 
-  animation:
-    scoreUpdate 0.9s ease,
-    celebrationGlow 0.9s ease;
+  position: absolute;
+
+  left: 50%;
+  top: 45%;
+
+  transform: translate(-50%, -50%);
+
+  font-size: clamp(35px, 5vw, 75px);
+
+  letter-spacing: 25px;
+
+  white-space: nowrap;
+
+  color: #ffffff;
+
+  animation: sparkleBurst 0.9s ease-out forwards;
 }
 
-@keyframes celebrationGlow {
+.celebration-container::after {
+  content: "✧     ✦     ✧";
+
+  font-size: clamp(25px, 3vw, 55px);
+
+  animation-delay: 0.08s;
+}
+
+@keyframes sparkleBurst {
+
   0% {
-    box-shadow:
-      0 0 0 rgba(255, 215, 80, 0);
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      scale(0.3);
   }
 
-  35% {
-    box-shadow:
-      0 0 45px rgba(255, 215, 80, 0.45),
-      0 0 80px rgba(60, 220, 255, 0.2);
+  30% {
+    opacity: 1;
   }
 
   100% {
-    box-shadow:
-      0 0 0 rgba(255, 215, 80, 0);
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.8);
+  }
+}
+
+
+/* =========================================
+   ➕ FLOATING SCORE
+========================================= */
+
+.tv-team.score-changed::after {
+  content: "+SCORE";
+
+  position: absolute;
+
+  right: 175px;
+  top: 50%;
+
+  transform:
+    translateY(-50%)
+    scale(0.5);
+
+  font-size: 24px;
+
+  font-weight: 900;
+
+  color: #ffffff;
+
+  letter-spacing: 2px;
+
+  opacity: 0;
+
+  animation: floatingScore 0.9s ease-out forwards;
+
+  pointer-events: none;
+}
+
+@keyframes floatingScore {
+
+  0% {
+    opacity: 0;
+
+    transform:
+      translateY(-20%)
+      scale(0.5);
+  }
+
+  25% {
+    opacity: 1;
+
+    transform:
+      translateY(-80%)
+      scale(1.15);
+  }
+
+  70% {
+    opacity: 1;
+
+    transform:
+      translateY(-130%)
+      scale(1);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translateY(-190%)
+      scale(0.9);
   }
 }
 
@@ -768,55 +858,47 @@ body {
 ========================================= */
 
 .tv-team.score-changed .tv-points {
-  animation:
-    pointsPop 0.9s ease,
-    pointGlow 0.9s ease;
+  animation: pointsPop 0.9s ease;
 }
 
-@keyframes pointGlow {
+@keyframes pointsPop {
+
   0% {
-    text-shadow:
-      0 0 0 transparent;
+    transform: scale(1);
   }
 
   35% {
-    text-shadow:
-      0 0 25px #ffffff,
-      0 0 45px #4deaff,
-      0 0 70px rgba(255, 215, 80, 0.8);
+    transform: scale(1.3);
+  }
+
+  65% {
+    transform: scale(1.1);
   }
 
   100% {
-    text-shadow:
-      0 0 20px rgba(50, 220, 255, 0.35);
+    transform: scale(1);
   }
 }
 
 
 /* =========================================
-   🏆 FIRST PLACE EXTRA CELEBRATION
+   📱 MOBILE
 ========================================= */
 
-.tv-team.first-place.score-changed {
-  animation:
-    scoreUpdate 0.9s ease,
-    winnerGlow 0.9s ease;
-}
+@media (max-width: 700px) {
 
-@keyframes winnerGlow {
-  0% {
-    box-shadow:
-      0 0 20px rgba(255, 200, 60, 0.15);
+  .tv-team.score-changed::after {
+    right: 90px;
+    font-size: 16px;
   }
 
-  40% {
-    box-shadow:
-      0 0 60px rgba(255, 205, 60, 0.7),
-      0 0 100px rgba(255, 215, 80, 0.3);
+  .confetti {
+    width: 7px;
+    height: 13px;
   }
 
-  100% {
-    box-shadow:
-      0 0 45px rgba(255, 195, 60, 0.13);
+  .celebration-container::before,
+  .celebration-container::after {
+    letter-spacing: 10px;
   }
 }
