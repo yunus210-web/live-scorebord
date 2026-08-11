@@ -902,3 +902,62 @@ body {
     letter-spacing: 10px;
   }
 }
+/* =========================================
+   ⬆️⬇️ SCORE DIRECTION
+========================================= */
+
+.points-area {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.score-arrow {
+  font-size: 34px;
+  line-height: 1;
+
+  animation: arrowMove 0.9s ease-out;
+}
+
+.score-up {
+  animation-name: arrowUp;
+}
+
+.score-down {
+  animation-name: arrowDown;
+}
+
+@keyframes arrowUp {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.7);
+  }
+
+  40% {
+    opacity: 1;
+    transform: translateY(0) scale(1.15);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-18px) scale(1);
+  }
+}
+
+@keyframes arrowDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.7);
+  }
+
+  40% {
+    opacity: 1;
+    transform: translateY(0) scale(1.15);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(18px) scale(1);
+  }
+}

@@ -30,25 +30,44 @@ function Display() {
       if (!scoreboard?.teams) return;
 
       setTeams((previousTeams) => {
+        // -----------------------------------------
+        // Previous scores
+        // -----------------------------------------
+
         const previousMap = {};
 
         previousTeams.forEach((team) => {
-          previousMap[team._id] = Number(team.points || 0);
+          previousMap[team._id] =
+            Number(team.points || 0);
         });
+
+        // -----------------------------------------
+        // Detect score changes
+        // -----------------------------------------
 
         const changed = {};
 
         scoreboard.teams.forEach((team) => {
-          const oldPoints = previousMap[team._id];
-          const newPoints = Number(team.points || 0);
+          const oldPoints =
+            previousMap[team._id];
+
+          const newPoints =
+            Number(team.points || 0);
 
           if (
             oldPoints !== undefined &&
             oldPoints !== newPoints
           ) {
-            changed[team._id] = true;
+            changed[team._id] =
+              newPoints > oldPoints
+                ? 'up'
+                : 'down';
           }
         });
+
+        // -----------------------------------------
+        // Celebration
+        // -----------------------------------------
 
         if (Object.keys(changed).length > 0) {
           setChangedTeams(changed);
@@ -57,8 +76,13 @@ function Display() {
 
           setTimeout(() => {
             setChangedTeams({});
+            setCelebration(false);
           }, 900);
         }
+
+        // -----------------------------------------
+        // Sort teams by score
+        // -----------------------------------------
 
         return [...scoreboard.teams].sort(
           (a, b) =>
@@ -76,23 +100,35 @@ function Display() {
   return (
     <div className="tv-display">
 
-    {celebration && (
-      <div className="celebration-container">
-        {Array.from({ length: 35 }).map((_, index) => (
-          <span
-            key={index}
-            className="confetti"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 0.25}s`,
-              animationDuration: `${0.7 + Math.random() * 0.7}s`,
-            }}
-          />
-        ))}
-      </div>
-    )}
+      {/* =========================================
+          🎉 CELEBRATION
+      ========================================= */}
 
-      {/* HEADER */}
+      {celebration && (
+        <div className="celebration-container">
+
+          {Array.from({ length: 35 }).map(
+            (_, index) => (
+              <span
+                key={index}
+                className="confetti"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  animationDelay:
+                    `${Math.random() * 0.25}s`,
+                  animationDuration:
+                    `${0.7 + Math.random() * 0.7}s`,
+                }}
+              />
+            )
+          )}
+
+        </div>
+      )}
+
+      {/* =========================================
+          HEADER
+      ========================================= */}
 
       <header className="tv-header">
 
@@ -113,7 +149,11 @@ function Display() {
         </h2>
 
         <div className="live-status">
-          <span>●</span>
+
+          <span>
+            ●
+          </span>
+
           LIVE SCORE
 
           <small>
@@ -121,11 +161,14 @@ function Display() {
               ? ' SERVER CONNECTED'
               : ' SERVER DISCONNECTED'}
           </small>
+
         </div>
 
       </header>
 
-      {/* SCOREBOARD */}
+      {/* =========================================
+          SCOREBOARD
+      ========================================= */}
 
       <main className="tv-scoreboard">
 
@@ -146,13 +189,19 @@ function Display() {
             <div
               className={`
                 tv-team
-                ${index === 0 ? 'first-place' : ''}
+                ${index === 0
+                  ? 'first-place'
+                  : ''}
                 ${changedTeams[team._id]
-                  ? 'score-changed'
+                  ? `score-changed ${changedTeams[team._id]}`
                   : ''}
               `}
               key={team._id || index}
             >
+
+              {/* =================================
+                  RANK
+              ================================= */}
 
               <div className="tv-rank">
 
@@ -166,6 +215,10 @@ function Display() {
 
               </div>
 
+              {/* =================================
+                  TEAM NAME
+              ================================= */}
+
               <div className="tv-team-name">
 
                 <h3>
@@ -178,15 +231,49 @@ function Display() {
 
               </div>
 
-              <div
-                className={`
-                  tv-points
-                  ${changedTeams[team._id]
-                    ? 'points-changed'
-                    : ''}
-                `}
-              >
-                {Number(team.points || 0)}
+              {/* =================================
+                  SCORE + ARROW
+              ================================= */}
+
+              <div className="points-area">
+
+                {changedTeams[team._id] ===
+                  'up' && (
+                  <span
+                    className="
+                      score-arrow
+                      score-up
+                    "
+                  >
+                    ⬆️
+                  </span>
+                )}
+
+                {changedTeams[team._id] ===
+                  'down' && (
+                  <span
+                    className="
+                      score-arrow
+                      score-down
+                    "
+                  >
+                    ⬇️
+                  </span>
+                )}
+
+                <div
+                  className={`
+                    tv-points
+                    ${changedTeams[team._id]
+                      ? 'points-changed'
+                      : ''}
+                  `}
+                >
+                  {Number(
+                    team.points || 0
+                  )}
+                </div>
+
               </div>
 
             </div>
@@ -197,7 +284,9 @@ function Display() {
 
       </main>
 
-      {/* FOOTER */}
+      {/* =========================================
+          FOOTER
+      ========================================= */}
 
       <footer className="tv-footer">
 
