@@ -167,13 +167,13 @@ function App() {
 
       <header className="hero">
         <p className="subtitle">
-          PANTHAVOOR ISLAM SABHA
+          HAYATHUL ISLAM MADRASSA,PANTHAVOOR
         </p>
 
-        <h1>HIM MEELAD FEST</h1>
+        <h1>NOORE RASOOL </h1>
 
         <p className="event-title">
-          Noore Rasool 
+          HIM MEELAD FEST'26 
         </p>
 
         <span>

@@ -39,7 +39,7 @@ function TeamsManagement() {
           <h1>📊 Teams Management</h1>
 
           <span>
-            HIM MEELAD FEST · നൂറെ റസൂൽ
+            NOORE RASOOL  · HIM MEELAD FEST'26
           </span>
         </div>
 

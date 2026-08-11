@@ -133,7 +133,7 @@ function Display() {
       <header className="tv-header">
 
         <div className="sabha">
-          PANTHAVOOR ISLAM SABHA
+          HAYATHUL ISLAM SABHA PANTHAVOOR
         </div>
 
         <div className="madrassa">
@@ -141,11 +141,11 @@ function Display() {
         </div>
 
         <h1>
-          HIM MEELAD FEST
+          NOORE RASOOL 
         </h1>
 
         <h2>
-          നൂറെ റസൂൽ
+          HIM MEELAD FEST'26
         </h2>
 
         <div className="live-status">

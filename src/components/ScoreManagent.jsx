@@ -244,7 +244,7 @@ function ScoreManagement() {
           </h1>
 
           <span>
-            HIM MEELAD FEST · નൂറെ റസൂൽ
+            NOORE RASOOL · HIM MEELAD FEST'26
           </span>
 
         </div>

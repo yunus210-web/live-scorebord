@@ -102,7 +102,7 @@ function EventData() {
           </h1>
 
           <span>
-            HIM MEELAD FEST · നൂറെ റസൂൽ
+            NOORE RASOOL  · HIM MEELAD FEST'26
           </span>
 
         </div>
