@@ -138,3 +138,21 @@ body {
     font-size: 30px;
   }
 }
+.score-arrow {
+  display: inline-block;
+  margin-left: 12px;
+  width: 0;
+  height: 0;
+}
+
+.score-up {
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 15px solid #35d878;
+}
+
+.score-down {
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 15px solid #ff3b30;
+}

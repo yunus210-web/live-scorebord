@@ -245,7 +245,7 @@ function Display() {
                       score-up
                     "
                   >
-                    ⬆️
+                    
                   </span>
                 )}
 
@@ -257,7 +257,7 @@ function Display() {
                       score-down
                     "
                   >
-                    ⬇️
+                    
                   </span>
                 )}
 
