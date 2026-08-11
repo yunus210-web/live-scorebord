@@ -7,8 +7,12 @@ const SERVER_URL =
 function ScoreManagement() {
   const [teams, setTeams] = useState([]);
   const [connected, setConnected] = useState(false);
+  const [customPoints, setCustomPoints] = useState({});
 
-  // Get a unique ID for each team
+  // -----------------------------------------
+  // Get unique team ID
+  // -----------------------------------------
+
   const getTeamId = (team, index) => {
     return (
       team._id ||
@@ -18,7 +22,10 @@ function ScoreManagement() {
     );
   };
 
+  // -----------------------------------------
   // Load scoreboard
+  // -----------------------------------------
+
   const loadScoreboard = async () => {
     try {
       const response = await fetch(
@@ -26,7 +33,9 @@ function ScoreManagement() {
       );
 
       if (!response.ok) {
-        throw new Error('Failed to load scoreboard');
+        throw new Error(
+          'Failed to load scoreboard'
+        );
       }
 
       const data = await response.json();
@@ -43,26 +52,43 @@ function ScoreManagement() {
     }
   };
 
+  // -----------------------------------------
   // Initial load
+  // -----------------------------------------
+
   useEffect(() => {
     loadScoreboard();
   }, []);
 
+  // -----------------------------------------
   // Update score
-  const updateScore = async (teamId, amount) => {
+  // -----------------------------------------
+
+  const updateScore = async (
+    teamId,
+    amount
+  ) => {
+    if (!amount || Number.isNaN(Number(amount))) {
+      return;
+    }
+
+    const scoreChange = Number(amount);
+
     const updatedTeams = teams.map(
       (team, index) => {
-        const currentId = getTeamId(
-          team,
-          index
-        );
+        const currentId =
+          getTeamId(team, index);
 
         if (currentId === teamId) {
+          const currentPoints =
+            Number(team.points || 0);
+
           return {
             ...team,
+
             points: Math.max(
               0,
-              Number(team.points || 0) + amount
+              currentPoints + scoreChange
             ),
           };
         }
@@ -71,7 +97,10 @@ function ScoreManagement() {
       }
     );
 
+    // -----------------------------------------
     // Update UI immediately
+    // -----------------------------------------
+
     setTeams(updatedTeams);
 
     try {
@@ -79,10 +108,12 @@ function ScoreManagement() {
         `${SERVER_URL}/api/scoreboard`,
         {
           method: 'POST',
+
           headers: {
             'Content-Type':
               'application/json',
           },
+
           body: JSON.stringify({
             eventName:
               'HIM MEELAD FEST',
@@ -102,7 +133,7 @@ function ScoreManagement() {
       }
 
       console.log(
-        'Score updated successfully'
+        `Score updated: ${scoreChange}`
       );
 
     } catch (error) {
@@ -111,12 +142,82 @@ function ScoreManagement() {
         error
       );
 
-      // Reload server data if update fails
+      // Restore server data
       loadScoreboard();
     }
   };
 
+  // -----------------------------------------
+  // Custom score
+  // -----------------------------------------
+
+  const handleCustomScore = (
+    teamId
+  ) => {
+    const value =
+      customPoints[teamId];
+
+    if (
+      value === undefined ||
+      value === '' ||
+      Number.isNaN(Number(value))
+    ) {
+      return;
+    }
+
+    const amount = Number(value);
+
+    if (amount === 0) {
+      return;
+    }
+
+    updateScore(
+      teamId,
+      amount
+    );
+
+    // Clear input after adding
+    setCustomPoints(
+      (previous) => ({
+        ...previous,
+        [teamId]: '',
+      })
+    );
+  };
+
+  // -----------------------------------------
+  // Custom input change
+  // -----------------------------------------
+
+  const handleCustomInput = (
+    teamId,
+    value
+  ) => {
+    setCustomPoints(
+      (previous) => ({
+        ...previous,
+        [teamId]: value,
+      })
+    );
+  };
+
+  // -----------------------------------------
+  // Enter key support
+  // -----------------------------------------
+
+  const handleCustomKeyDown = (
+    event,
+    teamId
+  ) => {
+    if (event.key === 'Enter') {
+      handleCustomScore(teamId);
+    }
+  };
+
+  // -----------------------------------------
   // Sort teams by points
+  // -----------------------------------------
+
   const sortedTeams = [...teams].sort(
     (a, b) =>
       Number(b.points || 0) -
@@ -126,7 +227,10 @@ function ScoreManagement() {
   return (
     <div className="score-management">
 
-      {/* HEADER */}
+      {/* =====================================
+          HEADER
+      ===================================== */}
+
       <header className="score-management-header">
 
         <div>
@@ -140,14 +244,17 @@ function ScoreManagement() {
           </h1>
 
           <span>
-            HIM MEELAD FEST · നൂറെ റസൂൽ
+            HIM MEELAD FEST · નൂറെ റസൂൽ
           </span>
 
         </div>
 
         <div className="score-status">
 
-          ●{' '}
+          <span>
+            ●
+          </span>{' '}
+
           {connected
             ? 'SERVER CONNECTED'
             : 'SERVER DISCONNECTED'}
@@ -156,8 +263,10 @@ function ScoreManagement() {
 
       </header>
 
+      {/* =====================================
+          CONTENT
+      ===================================== */}
 
-      {/* CONTENT */}
       <main className="score-management-content">
 
         <div className="score-page-title">
@@ -174,8 +283,10 @@ function ScoreManagement() {
 
         </div>
 
+        {/* ===================================
+            NO TEAMS
+        =================================== */}
 
-        {/* NO TEAMS */}
         {sortedTeams.length === 0 ? (
 
           <div className="score-empty">
@@ -196,7 +307,10 @@ function ScoreManagement() {
 
         ) : (
 
-          /* TEAMS */
+          /* =================================
+             TEAMS
+          ================================= */
+
           sortedTeams.map(
             (team, index) => {
 
@@ -213,7 +327,10 @@ function ScoreManagement() {
                   key={teamId}
                 >
 
-                  {/* RANK */}
+                  {/* =========================
+                      RANK
+                  ========================= */}
+
                   <div className="score-rank">
 
                     {index === 0
@@ -226,8 +343,10 @@ function ScoreManagement() {
 
                   </div>
 
+                  {/* =========================
+                      TEAM INFO
+                  ========================= */}
 
-                  {/* TEAM INFO */}
                   <div className="score-team-info">
 
                     <h3>
@@ -241,12 +360,42 @@ function ScoreManagement() {
 
                   </div>
 
+                  {/* =========================
+                      CURRENT SCORE
+                  ========================= */}
 
-                  {/* SCORE BUTTONS */}
+                  <div className="score-points">
+
+                    {Number(
+                      team.points || 0
+                    )}
+
+                  </div>
+
+                  {/* =========================
+                      QUICK SCORE
+                  ========================= */}
+
                   <div className="score-controls">
 
-                    {/* -5 */}
+                    {/* MINUS 10 */}
+
                     <button
+                      className="score-minus"
+                      onClick={() =>
+                        updateScore(
+                          teamId,
+                          -10
+                        )
+                      }
+                    >
+                      −10
+                    </button>
+
+                    {/* MINUS 5 */}
+
+                    <button
+                      className="score-minus"
                       onClick={() =>
                         updateScore(
                           teamId,
@@ -257,9 +406,38 @@ function ScoreManagement() {
                       −5
                     </button>
 
+                    {/* PLUS 1 */}
 
-                    {/* +5 */}
                     <button
+                      className="score-plus"
+                      onClick={() =>
+                        updateScore(
+                          teamId,
+                          1
+                        )
+                      }
+                    >
+                      +1
+                    </button>
+
+                    {/* PLUS 3 */}
+
+                    <button
+                      className="score-plus"
+                      onClick={() =>
+                        updateScore(
+                          teamId,
+                          3
+                        )
+                      }
+                    >
+                      +3
+                    </button>
+
+                    {/* PLUS 5 */}
+
+                    <button
+                      className="score-plus"
                       onClick={() =>
                         updateScore(
                           teamId,
@@ -270,9 +448,10 @@ function ScoreManagement() {
                       +5
                     </button>
 
+                    {/* PLUS 10 */}
 
-                    {/* +10 */}
                     <button
+                      className="score-plus"
                       onClick={() =>
                         updateScore(
                           teamId,
@@ -285,13 +464,44 @@ function ScoreManagement() {
 
                   </div>
 
+                  {/* =========================
+                      CUSTOM SCORE
+                  ========================= */}
 
-                  {/* POINTS */}
-                  <div className="score-points">
+                  <div className="custom-score-control">
 
-                    {Number(
-                      team.points || 0
-                    )}
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      placeholder="Custom points"
+                      value={
+                        customPoints[
+                          teamId
+                        ] ?? ''
+                      }
+                      onChange={(event) =>
+                        handleCustomInput(
+                          teamId,
+                          event.target.value
+                        )
+                      }
+                      onKeyDown={(event) =>
+                        handleCustomKeyDown(
+                          event,
+                          teamId
+                        )
+                      }
+                    />
+
+                    <button
+                      onClick={() =>
+                        handleCustomScore(
+                          teamId
+                        )
+                      }
+                    >
+                      ADD
+                    </button>
 
                   </div>
 
