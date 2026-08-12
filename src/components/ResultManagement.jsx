@@ -5,18 +5,31 @@ const SERVER_URL =
   'https://live-scorebord-production.up.railway.app';
 
 function ResultManagement() {
+  // =========================================
+  // EVENT DATA
+  // =========================================
+
   const [teams, setTeams] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [categories, setCategories] = useState([]);
   const [competitions, setCompetitions] = useState([]);
+  const [registrations, setRegistrations] = useState([]);
+
+  // =========================================
+  // SELECTED VALUES
+  // =========================================
 
   const [category, setCategory] = useState('');
-  const [competition,setCompetition] = useState('');
+  const [competition, setCompetition] = useState('');
   const [group, setGroup] = useState('');
 
   const [first, setFirst] = useState('');
   const [second, setSecond] = useState('');
   const [third, setThird] = useState('');
+
+  // =========================================
+  // STATUS
+  // =========================================
 
   const [loading, setLoading] = useState(true);
   const [publishing, setPublishing] = useState(false);
@@ -43,17 +56,36 @@ function ResultManagement() {
 
       const data = await response.json();
 
+      console.log(
+        'RESULT MANAGEMENT DATA:',
+        data
+      );
+
+      // =====================================
+      // TEAMS
+      // =====================================
+
       setTeams(
         Array.isArray(data.teams)
           ? data.teams
           : []
       );
 
+      // =====================================
+      // PARTICIPANTS / STUDENTS
+      // =====================================
+
       setParticipants(
         Array.isArray(data.participants)
           ? data.participants
+          : Array.isArray(data.students)
+          ? data.students
           : []
       );
+
+      // =====================================
+      // CATEGORIES
+      // =====================================
 
       setCategories(
         Array.isArray(data.categories)
@@ -61,11 +93,25 @@ function ResultManagement() {
           : []
       );
 
+      // =====================================
+      // COMPETITIONS
+      // =====================================
+
       setCompetitions(
         Array.isArray(data.competitions)
-        ? data.competitions
-        : []
-      )
+          ? data.competitions
+          : []
+      );
+
+      // =====================================
+      // REGISTRATIONS
+      // =====================================
+
+      setRegistrations(
+        Array.isArray(data.registrations)
+          ? data.registrations
+          : []
+      );
 
     } catch (error) {
       console.error(
@@ -82,221 +128,452 @@ function ResultManagement() {
     }
   };
 
+  // =========================================
+  // INITIAL LOAD
+  // =========================================
+
   useEffect(() => {
     loadData();
   }, []);
 
   // =========================================
-  // CATEGORY LIST
+  // HELPER: NORMALIZE VALUE
+  // =========================================
+
+  const normalize = (value) => {
+    return String(value || '')
+      .trim()
+      .toLowerCase();
+  };
+
+  // =========================================
+  // CATEGORY OPTIONS
   // =========================================
 
   const categoryOptions = useMemo(() => {
-    const values = [];
+    return categories
+      .map((item) => {
 
-    categories.forEach((item) => {
-      if (typeof item === 'string') {
-        values.push(item);
-        return;
-      }
+        if (typeof item === 'string') {
+          return {
+            id: item,
+            name: item,
+          };
+        }
 
-      const value =
-        item.name ||
-        item.title ||
-        item.category ||
-        item.categoryName;
+        return {
+          id:
+            item.id ||
+            item._id ||
+            item.categoryId ||
+            item.name,
 
-      if (value) {
-        values.push(String(value));
-      }
-    });
+          name:
+            item.name ||
+            item.title ||
+            item.category ||
+            item.categoryName ||
+            item.id ||
+            item._id,
+        };
 
-    participants.forEach((participant) => {
-      const value =
-        participant.categoryName ||
-        participant.category ||
-        participant.categoryTitle;
+      })
+      .filter(
+        (item) =>
+          item.id &&
+          item.name
+      )
+      .filter(
+        (item, index, array) =>
+          index ===
+          array.findIndex(
+            (x) =>
+              String(x.id) ===
+              String(item.id)
+          )
+      );
 
-      if (value) {
-        values.push(
-          typeof value === 'object'
-            ? value.name || value.title
-            : String(value)
-        );
-      }
-    });
-
-    return [...new Set(
-      values.filter(Boolean)
-    )].sort();
-
-  }, [categories, participants]);
+  }, [categories]);
 
   // =========================================
-  // GROUP LIST
+  // COMPETITION OPTIONS
+  // =========================================
+
+  const competitionOptions = useMemo(() => {
+
+    if (!category) {
+      return [];
+    }
+
+    return competitions.filter(
+      (item) => {
+
+        const competitionCategory =
+          item.category ||
+          item.categoryId ||
+          item.categoryID;
+
+        return (
+          normalize(
+            competitionCategory
+          ) ===
+          normalize(category)
+        );
+
+      }
+    );
+
+  }, [
+    competitions,
+    category,
+  ]);
+
+  // =========================================
+  // GROUP / TEAM OPTIONS
   // =========================================
 
   const groupOptions = useMemo(() => {
-    const values = [];
 
-    participants.forEach((participant) => {
-      const value =
-        participant.group ||
-        participant.groupName ||
-        participant.gender ||
-        participant.teamCategory;
+    return teams
+      .filter(
+        (team) =>
+          team &&
+          (
+            team.name ||
+            team.teamName
+          )
+      )
+      .map((team) => ({
+        id:
+          team.id ||
+          team._id ||
+          team.loginId,
 
-      if (value) {
-        values.push(String(value));
-      }
-    });
+        name:
+          team.name ||
+          team.teamName,
+      }))
+      .filter(
+        (item) =>
+          item.id &&
+          item.name
+      )
+      .filter(
+        (item, index, array) =>
+          index ===
+          array.findIndex(
+            (x) =>
+              String(x.id) ===
+              String(item.id)
+          )
+      )
+      .sort(
+        (a, b) =>
+          a.name.localeCompare(
+            b.name
+          )
+      );
 
-    teams.forEach((team) => {
-      const value =
-        team.group ||
-        team.groupName ||
-        team.category;
+  }, [teams]);
 
-      if (value) {
-        values.push(String(value));
-      }
-    });
+  // =========================================
+  // GET TEAM
+  // =========================================
 
-    return [...new Set(
-      values.filter(Boolean)
-    )].sort();
+  const getTeam = (student) => {
 
-  }, [participants, teams]);
+    if (!student) {
+      return null;
+    }
+
+    const teamId =
+      student.teamId ||
+      student.team ||
+      student.team_id;
+
+    // If team is already an object
+    if (
+      typeof teamId === 'object' &&
+      teamId !== null
+    ) {
+      return teamId;
+    }
+
+    return (
+      teams.find(
+        (team) =>
+          String(
+            team.id ||
+            team._id ||
+            team.loginId ||
+            ''
+          ) ===
+          String(teamId || '')
+      ) || null
+    );
+  };
+
+  // =========================================
+  // GET TEAM NAME
+  // =========================================
+
+  const getTeamName = (student) => {
+
+    if (!student) {
+      return '';
+    }
+
+    const team =
+      getTeam(student);
+
+    return (
+      team?.name ||
+      team?.teamName ||
+      student.teamName ||
+      ''
+    );
+  };
+
+  // =========================================
+  // GET PARTICIPANT NAME
+  // =========================================
+
+  const getParticipantName = (
+    student
+  ) => {
+
+    if (!student) {
+      return '';
+    }
+
+    return (
+      student.name ||
+      student.participantName ||
+      student.studentName ||
+      student.title ||
+      'Unknown Participant'
+    );
+  };
+
+  // =========================================
+  // GET PARTICIPANT ID
+  // =========================================
+
+  const getParticipantId = (
+    student
+  ) => {
+
+    if (!student) {
+      return '';
+    }
+
+    return (
+      student.id ||
+      student._id ||
+      student.studentId ||
+      student.chest ||
+      student.chestNo ||
+      student.name ||
+      ''
+    );
+  };
 
   // =========================================
   // FILTER PARTICIPANTS
+  //
+  // CATEGORY
+  // ↓
+  // COMPETITION
+  // ↓
+  // GROUP / TEAM
+  // ↓
+  // REGISTERED STUDENTS
   // =========================================
 
   const filteredParticipants = useMemo(() => {
 
     return participants.filter(
-      (participant) => {
+      (student) => {
 
-        // Category filter
+        // =====================================
+        // CATEGORY FILTER
+        // =====================================
+
         if (category) {
 
-          const participantCategory =
-            participant.categoryName ||
-            participant.category ||
-            participant.categoryTitle;
+          const studentCategory =
+            student.categoryId ||
+            student.category ||
+            student.categoryName ||
+            student.categoryTitle;
 
-          let categoryValue =
-            participantCategory;
+          let studentCategoryValue =
+            studentCategory;
 
           if (
-            typeof categoryValue ===
-            'object'
+            typeof studentCategoryValue ===
+            'object' &&
+            studentCategoryValue !== null
           ) {
-            categoryValue =
-              categoryValue.name ||
-              categoryValue.title;
+            studentCategoryValue =
+              studentCategoryValue.id ||
+              studentCategoryValue._id ||
+              studentCategoryValue.name ||
+              studentCategoryValue.title;
           }
 
           if (
-            String(categoryValue || '')
-              .toLowerCase() !==
-            category.toLowerCase()
+            normalize(
+              studentCategoryValue
+            ) !==
+            normalize(category)
           ) {
             return false;
           }
         }
 
-        // Group filter
+        // =====================================
+        // COMPETITION / REGISTRATION FILTER
+        // =====================================
+
+        if (competition) {
+
+          const studentId =
+            getParticipantId(
+              student
+            );
+
+          const isRegistered =
+            registrations.some(
+              (registration) => {
+
+                const registrationCompId =
+                  registration.compId ||
+                  registration.competitionId ||
+                  registration.competition ||
+                  registration.itemId;
+
+                const registrationStudentId =
+                  registration.studentId ||
+                  registration.student_id ||
+                  registration.student;
+
+                return (
+                  normalize(
+                    registrationCompId
+                  ) ===
+                  normalize(
+                    competition
+                  ) &&
+                  normalize(
+                    registrationStudentId
+                  ) ===
+                  normalize(
+                    studentId
+                  )
+                );
+
+              }
+            );
+
+          if (!isRegistered) {
+            return false;
+          }
+        }
+
+        // =====================================
+        // GROUP / TEAM FILTER
+        // =====================================
+
         if (group) {
 
-          const participantGroup =
-            participant.group ||
-            participant.groupName ||
-            participant.gender ||
-            participant.teamCategory;
+          const team =
+            getTeam(student);
+
+          const studentTeamId =
+            team?.id ||
+            team?._id ||
+            team?.loginId;
 
           if (
-            String(participantGroup || '')
-              .toLowerCase() !==
-            group.toLowerCase()
+            normalize(
+              studentTeamId
+            ) !==
+            normalize(group)
           ) {
             return false;
           }
         }
 
         return true;
+
       }
     );
 
   }, [
     participants,
+    registrations,
+    teams,
     category,
+    competition,
     group,
   ]);
 
   // =========================================
-  // PARTICIPANT DISPLAY NAME
+  // PARTICIPANT OPTIONS
   // =========================================
 
-  const getParticipantName = (
-    participant
-  ) => {
-
-    if (!participant) {
-      return '';
-    }
-
-    return (
-      participant.name ||
-      participant.participantName ||
-      participant.studentName ||
-      participant.title ||
-      'Unknown Participant'
-    );
-  };
-
-  // =========================================
-  // TEAM NAME
-  // =========================================
-
-  const getTeamName = (
-    participant
-  ) => {
-
-    if (!participant) {
-      return '';
-    }
-
-    const teamId =
-      participant.teamId ||
-      participant.team ||
-      participant.team_id;
+  const renderParticipantOptions = () => {
 
     if (
-      typeof teamId === 'object'
+      !category ||
+      !competition ||
+      !group
+    ) {
+      return null;
+    }
+
+    if (
+      filteredParticipants.length === 0
     ) {
       return (
-        teamId.name ||
-        teamId.teamName ||
-        ''
+        <option value="">
+          No registered participants found
+        </option>
       );
     }
 
-    const team = teams.find(
-      (item) =>
-        String(
-          item._id ||
-          item.id ||
-          item.loginId ||
-          ''
-        ) ===
-        String(teamId || '')
-    );
+    return filteredParticipants.map(
+      (student) => {
 
-    return (
-      team?.name ||
-      team?.teamName ||
-      participant.teamName ||
-      ''
+        const id =
+          getParticipantId(
+            student
+          );
+
+        const name =
+          getParticipantName(
+            student
+          );
+
+        const chest =
+          student.chest ||
+          student.chestNo;
+
+        return (
+          <option
+            key={id}
+            value={id}
+          >
+            {name}
+
+            {chest
+              ? ` — Chest ${chest}`
+              : ''}
+          </option>
+        );
+
+      }
     );
   };
 
@@ -306,164 +583,305 @@ function ResultManagement() {
 
   const publishResult = async () => {
 
-    if (!category) {
-      setMessage(
-        '⚠️ Please select a category.'
+  // =====================================
+  // CATEGORY VALIDATION
+  // =====================================
+
+  if (!category) {
+    setMessage(
+      '⚠️ Please select a category.'
+    );
+    return;
+  }
+
+  // =====================================
+  // COMPETITION VALIDATION
+  // =====================================
+
+  if (!competition) {
+    setMessage(
+      '⚠️ Please select a competition / item.'
+    );
+    return;
+  }
+
+  // =====================================
+  // GROUP VALIDATION
+  // =====================================
+
+  if (!group) {
+    setMessage(
+      '⚠️ Please select a group.'
+    );
+    return;
+  }
+
+  // =====================================
+  // FIRST VALIDATION
+  // =====================================
+
+  if (!first) {
+    setMessage(
+      '⚠️ Please select 1st place.'
+    );
+    return;
+  }
+
+  // =====================================
+  // SECOND VALIDATION
+  // =====================================
+
+  if (!second) {
+    setMessage(
+      '⚠️ Please select 2nd place.'
+    );
+    return;
+  }
+
+  // =====================================
+  // THIRD VALIDATION
+  // =====================================
+
+  if (!third) {
+    setMessage(
+      '⚠️ Please select 3rd place.'
+    );
+    return;
+  }
+
+  // =====================================
+  // DUPLICATE PARTICIPANT CHECK
+  // =====================================
+
+  if (
+    first === second ||
+    first === third ||
+    second === third
+  ) {
+    setMessage(
+      '⚠️ Same participant cannot have multiple positions.'
+    );
+    return;
+  }
+
+  setPublishing(true);
+  setMessage('');
+
+  try {
+
+    // =====================================
+    // FIND SELECTED PARTICIPANTS
+    // =====================================
+
+    const getId = (student) => {
+      if (!student) return '';
+
+      return (
+        student._id ||
+        student.id ||
+        student.studentId ||
+        student.chest ||
+        student.chestNo ||
+        student.name ||
+        ''
       );
-      return;
-    }
+    };
 
-    if(!competition) {
-        setMessage(
-      '⚠️ Please select a competition/item.'      
-        )
-    }
-
-    if (!group) {
-      setMessage(
-        '⚠️ Please select a group.'
+    const selectedFirst =
+      participants.find(
+        (student) =>
+          String(getId(student)) ===
+          String(first)
       );
-      return;
-    }
 
-    if (!first) {
-      setMessage(
-        '⚠️ Please select 1st place.'
+    const selectedSecond =
+      participants.find(
+        (student) =>
+          String(getId(student)) ===
+          String(second)
       );
-      return;
-    }
 
-    if (!second) {
-      setMessage(
-        '⚠️ Please select 2nd place.'
+    const selectedThird =
+      participants.find(
+        (student) =>
+          String(getId(student)) ===
+          String(third)
       );
-      return;
-    }
 
-    if (!third) {
-      setMessage(
-        '⚠️ Please select 3rd place.'
+    // =====================================
+    // CHECK PARTICIPANTS
+    // =====================================
+
+    if (!selectedFirst) {
+      throw new Error(
+        '1st place participant not found.'
       );
-      return;
     }
 
-    if (
-      first === second ||
-      first === third ||
-      second === third
-    ) {
-      setMessage(
-        '⚠️ Same participant cannot have multiple positions.'
+    if (!selectedSecond) {
+      throw new Error(
+        '2nd place participant not found.'
       );
-      return;
     }
 
-    setPublishing(true);
-    setMessage('');
+    if (!selectedThird) {
+      throw new Error(
+        '3rd place participant not found.'
+      );
+    }
 
-    try {
+    // =====================================
+    // FIND COMPETITION
+    // =====================================
 
-      const selectedFirst =
-        participants.find(
-          (item) =>
-            String(
-              item._id ||
-              item.id ||
-              item.chest ||
-              item.chestNo ||
-              item.name
-            ) === String(first)
-        );
+    const selectedCompetition =
+      competitions.find(
+        (item) =>
+          String(
+            item.id ||
+            item._id ||
+            item.compId ||
+            item.itemId
+          ) === String(competition)
+      );
 
-      const selectedSecond =
-        participants.find(
-          (item) =>
-            String(
-              item._id ||
-              item.id ||
-              item.chest ||
-              item.chestNo ||
-              item.name
-            ) === String(second)
-        );
+    // =====================================
+    // COMPETITION NAME
+    // =====================================
 
-      const selectedThird =
-        participants.find(
-          (item) =>
-            String(
-              item._id ||
-              item.id ||
-              item.chest ||
-              item.chestNo ||
-              item.name
-            ) === String(third)
-        );
+    const competitionName =
+      selectedCompetition?.name ||
+      selectedCompetition?.title ||
+      selectedCompetition?.itemName ||
+      selectedCompetition?.item ||
+      competition;
 
-      const result = {
-        id: `result-${Date.now()}`,
+    // =====================================
+    // CREATE RESULT
+    // =====================================
 
+    const result = {
+
+      id:
+        `result-${Date.now()}`,
+
+      // CATEGORY
+      categoryId:
         category,
 
+      category:
+        category,
+
+      // COMPETITION
+      competitionId:
+        competition,
+
+      competition:
+        competitionName,
+
+      // GROUP
+      group:
         group,
 
-        first: {
-          participantId:
-            selectedFirst?._id ||
-            selectedFirst?.id ||
-            first,
+      // =================================
+      // FIRST PLACE
+      // =================================
 
-          name:
-            getParticipantName(
-              selectedFirst
-            ),
+      first: {
 
-          team:
-            getTeamName(
-              selectedFirst
-            ),
-        },
+        participantId:
+          getId(selectedFirst),
 
-        second: {
-          participantId:
-            selectedSecond?._id ||
-            selectedSecond?.id ||
-            second,
+        name:
+          getParticipantName(
+            selectedFirst
+          ),
 
-          name:
-            getParticipantName(
-              selectedSecond
-            ),
+        chest:
+          selectedFirst?.chest ||
+          selectedFirst?.chestNo ||
+          '',
 
-          team:
-            getTeamName(
-              selectedSecond
-            ),
-        },
+        team:
+          getTeamName(
+            selectedFirst
+          ),
 
-        third: {
-          participantId:
-            selectedThird?._id ||
-            selectedThird?.id ||
-            third,
+      },
 
-          name:
-            getParticipantName(
-              selectedThird
-            ),
+      // =================================
+      // SECOND PLACE
+      // =================================
 
-          team:
-            getTeamName(
-              selectedThird
-            ),
-        },
+      second: {
 
-        published: true,
+        participantId:
+          getId(selectedSecond),
 
-        publishedAt:
-          new Date().toISOString(),
-      };
+        name:
+          getParticipantName(
+            selectedSecond
+          ),
 
-      const response = await fetch(
+        chest:
+          selectedSecond?.chest ||
+          selectedSecond?.chestNo ||
+          '',
+
+        team:
+          getTeamName(
+            selectedSecond
+          ),
+
+      },
+
+      // =================================
+      // THIRD PLACE
+      // =================================
+
+      third: {
+
+        participantId:
+          getId(selectedThird),
+
+        name:
+          getParticipantName(
+            selectedThird
+          ),
+
+        chest:
+          selectedThird?.chest ||
+          selectedThird?.chestNo ||
+          '',
+
+        team:
+          getTeamName(
+            selectedThird
+          ),
+
+      },
+
+      // STATUS
+
+      published:
+        true,
+
+      publishedAt:
+        new Date().toISOString(),
+
+    };
+
+    console.log(
+      '🏆 PUBLISHING RESULT:',
+      result
+    );
+
+    // =====================================
+    // SEND RESULT TO BACKEND
+    // =====================================
+
+    const response =
+      await fetch(
         `${SERVER_URL}/api/scoreboard`,
         {
           method: 'POST',
@@ -473,508 +891,107 @@ function ResultManagement() {
               'application/json',
           },
 
-          body: JSON.stringify({
+          body:
+            JSON.stringify({
 
-            eventName:
-              'HIM MEELAD FEST',
+              eventName:
+                'HIM MEELAD FEST',
 
-            eventTitle:
-              'NOORE RASOOL',
+              eventTitle:
+                'NOORE RASOOL',
 
-            teams,
+              teams,
 
-            participants,
+              participants,
 
-            categories,
+              students:
+                participants,
 
-            publishedResult: result,
+              categories,
 
-            resultAnnouncement: {
-              visible: true,
+              competitions,
 
-              status:
-                'RESULT_COMING_SOON',
+              publishedResult:
+                result,
 
-              updatedAt:
-                new Date().toISOString(),
-            },
-          }),
+              resultAnnouncement: {
+
+                visible:
+                  true,
+
+                status:
+                  'RESULT_PUBLISHED',
+
+                updatedAt:
+                  new Date().toISOString(),
+
+              },
+
+            }),
+
         }
       );
 
-      if (!response.ok) {
-        throw new Error(
-          'Failed to publish result.'
-        );
+    // =====================================
+    // RESPONSE ERROR CHECK
+    // =====================================
+
+    if (!response.ok) {
+
+      let errorMessage =
+        'Failed to publish result.';
+
+      try {
+
+        const errorData =
+          await response.json();
+
+        errorMessage =
+          errorData.message ||
+          errorData.error ||
+          errorMessage;
+
+      } catch {
+        // JSON response ഇല്ലെങ്കിൽ
+        // default error ഉപയോഗിക്കും
       }
 
-      setMessage(
-        '✅ Result published successfully!'
+      throw new Error(
+        errorMessage
       );
-
-      setFirst('');
-      setSecond('');
-      setThird('');
-
-    } catch (error) {
-
-      console.error(
-        'Publish result failed:',
-        error
-      );
-
-      setMessage(
-        `❌ ${error.message}`
-      );
-
-    } finally {
-      setPublishing(false);
     }
-  };
 
-  // =========================================
-  // UI
-  // =========================================
+    // =====================================
+    // SUCCESS
+    // =====================================
 
-  return (
-    <div className="result-management">
+    setMessage(
+      '✅ Result published successfully!'
+    );
 
-      {/* HEADER */}
+    // Clear selections
 
-      <header className="result-management-header">
+    setFirst('');
+    setSecond('');
+    setThird('');
 
-        <div>
+  } catch (error) {
 
-          <p>
-            ADMIN CONTROL PANEL
-          </p>
+    console.error(
+      '❌ Publish result failed:',
+      error
+    );
 
-          <h1>
-            🏆 Result Management
-          </h1>
+    setMessage(
+      `❌ ${error.message}`
+    );
 
-          <span>
-            NOORE RASOOL · HIM MEELAD FEST'26
-          </span>
+  } finally {
 
-        </div>
+    setPublishing(false);
 
-        <button
-          className="result-refresh"
-          onClick={loadData}
-          disabled={loading}
-        >
-          🔄 Refresh
-        </button>
+  }
+};
 
-      </header>
-
-
-      {/* CONTENT */}
-
-      <main className="result-management-content">
-
-        {loading ? (
-
-          <div className="result-loading">
-            Loading event data...
-          </div>
-
-        ) : (
-
-          <section className="result-card">
-
-            <div className="result-card-title">
-
-              <h2>
-                Publish Result
-              </h2>
-
-              <span>
-                📺 Public Display
-              </span>
-
-            </div>
-
-
-            {/* CATEGORY */}
-
-            <div className="result-field">
-
-              <label>
-                Category
-              </label>
-
-              <select
-                value={category}
-                onChange={(e) => {
-
-                  setCategory(
-                    e.target.value
-                  );
-
-                  setFirst('');
-                  setSecond('');
-                  setThird('');
-                  setMessage('');
-
-                }}
-              >
-
-                <option value="">
-                  Select Category
-                </option>
-
-                {categoryOptions.map(
-                  (item) => (
-                    <option
-                      key={item}
-                      value={item}
-                    >
-                      {item}
-                    </option>
-                  )
-                )}
-
-              </select>
-
-            </div>
-
-            {/* COMPETITION / ITEM */}
-
-<div className="result-field">
-
-  <label>
-    Competition / Item
-  </label>
-
-  <select
-    value={competition}
-    onChange={(e) => {
-
-      setCompetition(e.target.value);
-
-      setFirst('');
-      setSecond('');
-      setThird('');
-      setMessage('');
-
-    }}
-  >
-
-    <option value="">
-      Select Competition / Item
-    </option>
-
-    {competitions.map((item) => {
-
-      const id =
-        item._id ||
-        item.id ||
-        item.itemId ||
-        item.name;
-
-      const name =
-        item.name ||
-        item.title ||
-        item.itemName ||
-        item.item;
-
-      return (
-        <option
-          key={id}
-          value={id}
-        >
-          {name}
-        </option>
-      );
-
-    })}
-
-  </select>
-
-</div>
-
-
-            {/* GROUP */}
-
-            <div className="result-field">
-
-              <label>
-                Group
-              </label>
-
-              <select
-                value={group}
-                onChange={(e) => {
-
-                  setGroup(
-                    e.target.value
-                  );
-
-                  setFirst('');
-                  setSecond('');
-                  setThird('');
-                  setMessage('');
-
-                }}
-              >
-
-                <option value="">
-                  Select Group
-                </option>
-
-                {groupOptions.map(
-                  (item) => (
-                    <option
-                      key={item}
-                      value={item}
-                    >
-                      {item}
-                    </option>
-                  )
-                )}
-
-              </select>
-
-            </div>
-
-
-            {/* PARTICIPANTS */}
-
-            <div className="result-positions">
-
-              {/* FIRST */}
-
-              <div className="result-position first">
-
-                <div className="position-icon">
-                  🥇
-                </div>
-
-                <div>
-
-                  <label>
-                    1st Place
-                  </label>
-
-                  <select
-                    value={first}
-                    onChange={(e) =>
-                      setFirst(
-                        e.target.value
-                      )
-                    }
-                  >
-
-                    <option value="">
-                      Select Participant
-                    </option>
-
-                    {filteredParticipants.map(
-                      (participant) => {
-
-                        const id =
-                          participant._id ||
-                          participant.id ||
-                          participant.chest ||
-                          participant.chestNo ||
-                          participant.name;
-
-                        return (
-                          <option
-                            key={id}
-                            value={id}
-                          >
-                            {getParticipantName(
-                              participant
-                            )}
-
-                            {getTeamName(
-                              participant
-                            )
-                              ? ` — ${getTeamName(
-                                  participant
-                                )}`
-                              : ''}
-                          </option>
-                        );
-
-                      }
-                    )}
-
-                  </select>
-
-                </div>
-
-              </div>
-
-
-              {/* SECOND */}
-
-              <div className="result-position second">
-
-                <div className="position-icon">
-                  🥈
-                </div>
-
-                <div>
-
-                  <label>
-                    2nd Place
-                  </label>
-
-                  <select
-                    value={second}
-                    onChange={(e) =>
-                      setSecond(
-                        e.target.value
-                      )
-                    }
-                  >
-
-                    <option value="">
-                      Select Participant
-                    </option>
-
-                    {filteredParticipants.map(
-                      (participant) => {
-
-                        const id =
-                          participant._id ||
-                          participant.id ||
-                          participant.chest ||
-                          participant.chestNo ||
-                          participant.name;
-
-                        return (
-                          <option
-                            key={id}
-                            value={id}
-                          >
-                            {getParticipantName(
-                              participant
-                            )}
-
-                            {getTeamName(
-                              participant
-                            )
-                              ? ` — ${getTeamName(
-                                  participant
-                                )}`
-                              : ''}
-                          </option>
-                        );
-
-                      }
-                    )}
-
-                  </select>
-
-                </div>
-
-              </div>
-
-
-              {/* THIRD */}
-
-              <div className="result-position third">
-
-                <div className="position-icon">
-                  🥉
-                </div>
-
-                <div>
-
-                  <label>
-                    3rd Place
-                  </label>
-
-                  <select
-                    value={third}
-                    onChange={(e) =>
-                      setThird(
-                        e.target.value
-                      )
-                    }
-                  >
-
-                    <option value="">
-                      Select Participant
-                    </option>
-
-                    {filteredParticipants.map(
-                      (participant) => {
-
-                        const id =
-                          participant._id ||
-                          participant.id ||
-                          participant.chest ||
-                          participant.chestNo ||
-                          participant.name;
-
-                        return (
-                          <option
-                            key={id}
-                            value={id}
-                          >
-                            {getParticipantName(
-                              participant
-                            )}
-
-                            {getTeamName(
-                              participant
-                            )
-                              ? ` — ${getTeamName(
-                                  participant
-                                )}`
-                              : ''}
-                          </option>
-                        );
-
-                      }
-                    )}
-
-                  </select>
-
-                </div>
-
-              </div>
-
-            </div>
-
-
-            {/* PUBLISH */}
-
-            <button
-              className="publish-result-button"
-              onClick={publishResult}
-              disabled={publishing}
-            >
-
-              {publishing
-                ? 'Publishing...'
-                : '📢 PUBLISH RESULT'}
-
-            </button>
-
-
-            {/* MESSAGE */}
-
-            {message && (
-              <div className="result-message">
-                {message}
-              </div>
-            )}
-
-          </section>
-
-        )}
-
-      </main>
-
-    </div>
-  );
 }
-
 export default ResultManagement;
