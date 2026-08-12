@@ -25,6 +25,10 @@ function EventData() {
 
       // Same logic as the original working import
       const teams = jsonData.teams || [];
+      const students = jsonData.students || [];
+const categories = jsonData.categories || [];
+const competitions = jsonData.competitions || [];
+const registrations = jsonData.registrations || [];
 
       if (!Array.isArray(teams) || teams.length === 0) {
         throw new Error(
@@ -47,16 +51,17 @@ function EventData() {
 
   eventTitle:
     jsonData.eventTitle ||
-    'നൂറെ റസൂൽ',
+    'NOORE RASOOL',
 
-  teams:
-    jsonData.teams || [],
+  teams: teams,
 
-  participants:
-    jsonData.participants || [],
+  students: students,
 
-  categories:
-    jsonData.categories || [],
+  categories: categories,
+
+  competitions: competitions,
+
+  registrations: registrations,
 }),
         }
       );

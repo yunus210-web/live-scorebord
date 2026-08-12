@@ -177,6 +177,27 @@ const SERVER_URL =
             </button>
           </div>
 
+          <div className="admin-panel">
+  <div className="panel-icon">🏆</div>
+
+  <h3>
+    Result Management
+  </h3>
+
+  <p>
+    Publish 1st, 2nd and 3rd place results.
+  </p>
+
+  <button
+    className="panel-button"
+    onClick={() => {
+      window.location.href = '/admin/results';
+    }}
+  >
+    Manage Results
+  </button>
+</div>
+
         </section>
 
       </main>
