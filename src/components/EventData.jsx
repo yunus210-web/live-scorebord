@@ -41,16 +41,23 @@ function EventData() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            eventName:
-              jsonData.eventName ||
-              'HIM MEELAD FEST',
+  eventName:
+    jsonData.eventName ||
+    'HIM MEELAD FEST',
 
-            eventTitle:
-              jsonData.eventTitle ||
-              'നൂറെ റസൂൽ',
+  eventTitle:
+    jsonData.eventTitle ||
+    'നൂറെ റസൂൽ',
 
-            teams: teams,
-          }),
+  teams:
+    jsonData.teams || [],
+
+  participants:
+    jsonData.participants || [],
+
+  categories:
+    jsonData.categories || [],
+}),
         }
       );
 
