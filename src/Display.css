@@ -1441,3 +1441,122 @@ body {
     font-size: 65px;
   }
 }
+countdown-colon {
+  color: #ffd84d;
+
+  font-size: 50px;
+
+  font-weight: 900;
+
+  margin-top: -20px;
+
+  text-shadow:
+    0 0 10px rgba(255, 216, 77, 0.8);
+
+  animation: countdownBlink 1s infinite;
+}
+
+@keyframes countdownBlink {
+
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  50%,
+  95% {
+    opacity: 0.35;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Event name */
+
+.countdown-event-name {
+  margin-top: 22px;
+
+  color: #ffd84d;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  letter-spacing: 4px;
+
+  text-transform: uppercase;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+  .event-countdown {
+    width: 94%;
+    padding: 22px 8px;
+    border-radius: 20px;
+  }
+
+  .countdown-values {
+    gap: 4px;
+  }
+
+  .countdown-box {
+    min-width: 65px;
+    padding: 14px 5px 10px;
+    border-radius: 13px;
+  }
+
+  .countdown-number {
+    font-size: 30px;
+  }
+
+  .countdown-label {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .countdown-colon {
+    font-size: 25px;
+    margin-top: -12px;
+  }
+
+  .countdown-heading {
+    font-size: 17px;
+    letter-spacing: 2px;
+  }
+}
+
+/* =========================================
+   LARGE TV
+========================================= */
+
+@media (min-width: 1400px) {
+
+  .event-countdown {
+    max-width: 1350px;
+    padding: 38px 45px;
+  }
+
+  .countdown-box {
+    min-width: 190px;
+    padding: 28px 20px 18px;
+  }
+
+  .countdown-number {
+    font-size: 82px;
+  }
+
+  .countdown-label {
+    font-size: 15px;
+  }
+
+  .countdown-colon {
+    font-size: 65px;
+  }
+}
+
