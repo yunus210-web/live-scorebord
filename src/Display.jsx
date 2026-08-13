@@ -7,6 +7,7 @@ const SERVER_URL =
 
 function Display() {
   const [teams, setTeams] = useState([]);
+  const [publishedResult, setPublishedResult] = useState(null);
   const [connected, setConnected] = useState(false);
   const [changedTeams, setChangedTeams] = useState({});
   const [celebration, setCelebration] = useState(false);
@@ -27,8 +28,18 @@ function Display() {
     socket.on('scoreboard:update', (scoreboard) => {
       console.log('TV LIVE UPDATE:', scoreboard);
 
-      if (!scoreboard?.teams) return;
-
+      if (scoreboard?.publishedResult) {
+        console.log(
+          'TV PUBLISHED RESULT:',
+          scoreboard.publishedResult
+        );
+        setPublishedResult(
+         scoreboard.publishedResult
+        );
+      } 
+      if(!scoreboard?.teams){
+        return;
+      }
       setTeams((previousTeams) => {
         // -----------------------------------------
         // Previous scores
@@ -171,7 +182,102 @@ function Display() {
       ========================================= */}
 
       <main className="tv-scoreboard">
+        {/* =========================================
+    🏆 PUBLISHED RESULT
+========================================= */}
 
+{publishedResult && (
+  <section className="published-result">
+
+    <div className="published-result-title">
+      🏆 RESULT PUBLISHED 🏆
+    </div>
+
+    <div className="published-result-competition">
+      {publishedResult.competition}
+    </div>
+
+    <div className="winner-list">
+
+      {/* 1st */}
+      {publishedResult.first && (
+        <div className="winner-card first">
+          <div className="winner-medal">🥇</div>
+
+          <div className="winner-position">
+            1st PLACE
+          </div>
+
+          <div className="winner-name">
+            {publishedResult.first.name}
+          </div>
+
+          <div className="winner-team">
+            {publishedResult.first.team}
+          </div>
+
+          {publishedResult.first.chest && (
+            <div className="winner-chest">
+              Chest {publishedResult.first.chest}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 2nd */}
+      {publishedResult.second && (
+        <div className="winner-card second">
+          <div className="winner-medal">🥈</div>
+
+          <div className="winner-position">
+            2nd PLACE
+          </div>
+
+          <div className="winner-name">
+            {publishedResult.second.name}
+          </div>
+
+          <div className="winner-team">
+            {publishedResult.second.team}
+          </div>
+
+          {publishedResult.second.chest && (
+            <div className="winner-chest">
+              Chest {publishedResult.second.chest}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 3rd */}
+      {publishedResult.third && (
+        <div className="winner-card third">
+          <div className="winner-medal">🥉</div>
+
+          <div className="winner-position">
+            3rd PLACE
+          </div>
+
+          <div className="winner-name">
+            {publishedResult.third.name}
+          </div>
+
+          <div className="winner-team">
+            {publishedResult.third.team}
+          </div>
+
+          {publishedResult.third.chest && (
+            <div className="winner-chest">
+              Chest {publishedResult.third.chest}
+            </div>
+          )}
+        </div>
+      )}
+
+    </div>
+
+  </section>
+)}
         <div className="tv-board-title">
           🏆 POINT TABLE 🏆
         </div>
