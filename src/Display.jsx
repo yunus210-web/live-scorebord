@@ -7,12 +7,123 @@ const SERVER_URL =
 
 function Display() {
   const [teams, setTeams] = useState([]);
-  const [publishedResult, setPublishedResult] = useState(null);
+  console.log("DISPLAY TEAMS:",teams);
+  console.log("DISPLAY TEAMS COUNT:",teams.length);
+  
   const [connected, setConnected] = useState(false);
   const [changedTeams, setChangedTeams] = useState({});
   const [celebration, setCelebration] = useState(false);
+  // =========================================
+// ⏳ EVENT COUNTDOWN
+// =========================================
+
+const COUNTDOWN_TARGET = new Date(
+  '2026-08-27T19:00:00+05:30'
+).getTime();
+
+const [countdown, setCountdown] = useState({
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+});
+
+useEffect(() => {
+
+  const updateCountdown = () => {
+
+    const now = new Date().getTime();
+    const difference = COUNTDOWN_TARGET - now;
+
+    if (difference <= 0) {
+      setCountdown({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      });
+
+      return;
+    }
+
+    setCountdown({
+      days: Math.floor(
+        difference / (1000 * 60 * 60 * 24)
+      ),
+
+      hours: Math.floor(
+        (difference / (1000 * 60 * 60)) % 24
+      ),
+
+      minutes: Math.floor(
+        (difference / (1000 * 60)) % 60
+      ),
+
+      seconds: Math.floor(
+        (difference / 1000) % 60
+      ),
+    });
+  };
+
+  updateCountdown();
+
+  const timer = setInterval(
+    updateCountdown,
+    1000
+  );
+
+  return () => clearInterval(timer);
+
+}, []);
 
   useEffect(() => {
+    const loadTeams = async () => {
+
+    try {
+
+      const response = await fetch(
+        `${SERVER_URL}/api/teams`
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Teams API returned ${response.status}`
+        );
+      }
+
+      const data = await response.json();
+
+      console.log("INITIAL TEAMS API:", data);
+
+      const initialTeams =
+        Array.isArray(data)
+          ? data
+          : data.teams || data.data || [];
+
+      const sortedTeams = [...initialTeams].sort(
+        (a, b) =>
+          Number(b.points || 0) -
+          Number(a.points || 0)
+      );
+
+      setTeams(sortedTeams);
+
+    } catch (error) {
+
+      console.error(
+        "FAILED TO LOAD INITIAL TEAMS:",
+        error
+      );
+
+    }
+
+  };
+
+  // Initial load
+  loadTeams();
+
+
+  
     const socket = io(SERVER_URL);
 
     socket.on('connect', () => {
@@ -182,102 +293,69 @@ function Display() {
       ========================================= */}
 
       <main className="tv-scoreboard">
-        {/* =========================================
-    🏆 PUBLISHED RESULT
+   {/* =========================================
+    ⏳ EVENT COUNTDOWN
 ========================================= */}
+{Date.now()< COUNTDOWN_TARGET &&(
+<section className="event-countdown">
 
-{publishedResult && (
-  <section className="published-result">
+  <div className="countdown-heading">
+    <span>⏳</span>
+    <span>EVENT COUNTDOWN</span>
+  </div>
 
-    <div className="published-result-title">
-      🏆 RESULT PUBLISHED 🏆
+  <div className="countdown-values">
+
+    <div className="countdown-box">
+      <div className="countdown-number">
+        {String(countdown.days).padStart(2, '0')}
+      </div>
+      <div className="countdown-label">
+        DAYS
+      </div>
     </div>
 
-    <div className="published-result-competition">
-      {publishedResult.competition}
+    <div className="countdown-colon">:</div>
+
+    <div className="countdown-box">
+      <div className="countdown-number">
+        {String(countdown.hours).padStart(2, '0')}
+      </div>
+      <div className="countdown-label">
+        HOURS
+      </div>
     </div>
 
-    <div className="winner-list">
+    <div className="countdown-colon">:</div>
 
-      {/* 1st */}
-      {publishedResult.first && (
-        <div className="winner-card first">
-          <div className="winner-medal">🥇</div>
-
-          <div className="winner-position">
-            1st PLACE
-          </div>
-
-          <div className="winner-name">
-            {publishedResult.first.name}
-          </div>
-
-          <div className="winner-team">
-            {publishedResult.first.team}
-          </div>
-
-          {publishedResult.first.chest && (
-            <div className="winner-chest">
-              Chest {publishedResult.first.chest}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 2nd */}
-      {publishedResult.second && (
-        <div className="winner-card second">
-          <div className="winner-medal">🥈</div>
-
-          <div className="winner-position">
-            2nd PLACE
-          </div>
-
-          <div className="winner-name">
-            {publishedResult.second.name}
-          </div>
-
-          <div className="winner-team">
-            {publishedResult.second.team}
-          </div>
-
-          {publishedResult.second.chest && (
-            <div className="winner-chest">
-              Chest {publishedResult.second.chest}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 3rd */}
-      {publishedResult.third && (
-        <div className="winner-card third">
-          <div className="winner-medal">🥉</div>
-
-          <div className="winner-position">
-            3rd PLACE
-          </div>
-
-          <div className="winner-name">
-            {publishedResult.third.name}
-          </div>
-
-          <div className="winner-team">
-            {publishedResult.third.team}
-          </div>
-
-          {publishedResult.third.chest && (
-            <div className="winner-chest">
-              Chest {publishedResult.third.chest}
-            </div>
-          )}
-        </div>
-      )}
-
+    <div className="countdown-box">
+      <div className="countdown-number">
+        {String(countdown.minutes).padStart(2, '0')}
+      </div>
+      <div className="countdown-label">
+        MINUTES
+      </div>
     </div>
 
-  </section>
-)}
+    <div className="countdown-colon">:</div>
+
+    <div className="countdown-box">
+      <div className="countdown-number">
+        {String(countdown.seconds).padStart(2, '0')}
+      </div>
+      <div className="countdown-label">
+        SECONDS
+      </div>
+    </div>
+
+  </div>
+
+  <div className="countdown-event-name">
+    HIM MEELAD FEST
+  </div>
+
+</section>
+  )}  
         <div className="tv-board-title">
           🏆 POINT TABLE 🏆
         </div>
