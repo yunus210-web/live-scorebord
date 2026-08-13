@@ -1560,3 +1560,18 @@ countdown-colon {
   }
 }
 
+@media (max-width: 700px) {
+
+  .tv-team-name h3 {
+    font-size: 16px;
+    line-height: 1.15;
+
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+}
